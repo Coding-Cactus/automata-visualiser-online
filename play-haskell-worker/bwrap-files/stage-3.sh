@@ -43,8 +43,8 @@ case "$command" in
     ;;
   asm)
     cat >input.hs
-    /builders/build-"${version}".sh -ddump-asm -ddump-to-file "${opt}" input.hs >/tmp/null 2>&"$ghc_out_fd"
-    cat input.dump-asm
+    /builders/build-"${version}".sh -ddump-asm -ddump-llvm -ddump-to-file "${opt}" input.hs >/tmp/null 2>&"$ghc_out_fd"
+    if [[ -f input.dump-llvm ]]; then cat input.dump-llvm; else cat input.dump-asm; fi
     ;;
 
   *)
