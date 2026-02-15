@@ -1,16 +1,18 @@
+BASE=bwrap-files/ubuntu-base
+
 .PHONY: all chroot builders
 
 all: chroot bwrap-files/systemd-run-shim bwrap-files/systemd-kill-shim builders
 
-chroot: bwrap-files/ubuntu-base
-	bwrap --bind bwrap-files/ubuntu-base / --ro-bind /etc/resolv.conf /etc/resolv.conf --tmpfs /tmp --dev /dev --proc /proc --new-session --unshare-all --share-net --die-with-parent --gid 0 --uid 0 --chdir / --ro-bind bwrap-files/chroot-initialise.sh /tmp/chinit.sh /bin/bash /tmp/chinit.sh
+chroot: $(BASE)
+	bwrap --bind $(BASE) / --ro-bind /etc/resolv.conf /etc/resolv.conf --tmpfs /tmp --dev /dev --proc /proc --new-session --unshare-all --share-net --die-with-parent --gid 0 --uid 0 --chdir / --ro-bind bwrap-files/chroot-initialise.sh /tmp/chinit.sh /bin/bash /tmp/chinit.sh
 
 builders:
 	bwrap-files/mkallbuildscripts.sh
 
-bwrap-files/ubuntu-base:
+$(BASE):
 	mkdir '$@'
-	curl -L 'https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-amd64.tar.gz' | tar -C '$@' -xz
+	curl -L 'https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.3-base-amd64.tar.gz' | tar -C '$@' -xz
 
 bwrap-files/systemd-run-shim: bwrap-files/systemd-run-shim.c
 	gcc -Wall -Wextra -std=c11 -O2 -o $@ $<

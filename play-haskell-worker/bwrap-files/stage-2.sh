@@ -24,6 +24,7 @@ args=(
   --symlink /usr/bin /bin
   --ro-bind "${chroot}/usr/bin" /usr/bin
   --ro-bind "${chroot}/usr/lib" /usr/lib
+  --ro-bind "${chroot}/usr/libexec" /usr/libexec
   --ro-bind "${chroot}/usr/include" /usr/include
   # --ro-bind "${chroot}/lib" /lib
   --symlink /usr/lib /lib
@@ -34,7 +35,8 @@ args=(
   --ro-bind "${ghcup_base}/cache" "${ghcup_base}/cache"
   --ro-bind "${PWD}/builderprojs" "/builderprojs"
   --ro-bind "${PWD}/builders" "/builders"
-  --setenv PATH "/bin:/usr/bin:${ghcup_base}/bin"
+  # The order of /usr/bin before /bin is important for gcc to properly find cc1
+  --setenv PATH "/usr/lib/llvm-15/bin:/usr/bin:/bin:${ghcup_base}/bin"
   --setenv GHCUP_INSTALL_BASE_PREFIX "$(dirname "${ghcup_base}")"
   --setenv GHCUP_SKIP_UPDATE_CHECK ""
   --proc /proc
