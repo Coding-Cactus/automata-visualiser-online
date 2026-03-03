@@ -53,47 +53,13 @@ mkdir -p "$projdir"
 mkdir -p "$cabaldir"
 mkdir -p "$outdir"
 
-# wishlist:
-# adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, copilot >=3.19, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai >=0.13, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-experimental, ghc-heap, ghc-internal, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, libiserv, linear-base, linear-generics, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-builder-linear, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word >= 0.1.8.1, witherable, xhtml, xml, Yampa >=0.15, zigzag, zlib
-
 function build_depends_for() {
   if [[ -n $dependencies_override ]]; then
     echo "$dependencies_override"
     return
   fi
 
-  case "$1" in
-    8.4.4)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai, effectful, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, wide-word, witherable, xhtml, xml, Yampa, zigzag, zlib"
-      ;;
-    8.6.5)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytebuild, byteslice, bytesmith, bytestring, Cabal, case-insensitive, chronos, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contiguous, contravariant, copilot >=3.19, copilot-c99, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai, effectful, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-heap, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, libiserv, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, primitive-unlifted, process, profunctors, QuickCheck, random, reflection, rts, run-st, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word, witherable, xhtml, xml, Yampa, zigzag, zlib"
-      ;;
-    9.6.*)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, copilot >=3.19, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai >=0.13, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-heap, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, libiserv, linear-base, linear-generics, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-builder-linear, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word, witherable, xhtml, xml, Yampa, zigzag, zlib"
-      ;;
-    9.8.*)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, copilot >=3.19, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-heap, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, linear-base, linear-generics, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-builder-linear, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word, witherable, xhtml, xml, Yampa >=0.15, zigzag, zlib"
-      ;;
-    9.10.*)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, copilot >=3.19, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai >=0.13, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-experimental, ghc-heap, ghc-internal, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, linear-base, linear-generics, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-builder-linear, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word, witherable, xhtml, xml, Yampa >=0.15, zigzag, zlib"
-      ;;
-    9.12.*)
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytestring, Cabal, case-insensitive, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contravariant, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-prettyprinter >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai >=0.13, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-experimental, ghc-heap, ghc-internal, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics-core, optics-extra, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, profunctors, QuickCheck, random, reflection, rts, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-builder-linear, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, wide-word, witherable, xhtml, xml, Yampa >=0.15, zigzag, zlib"
-      ;;
-    9.14.*)
-      echo "array, base, bimap, binary, bitvec, bitwise, BoundedChan, bytestring, Cabal, clock, colour, concurrent-extra, containers, contravariant, copilot-c99 >=3.19, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-prettyprinter >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, directory, dlist, dunai >=0.13, effectful, effectful-core, exceptions, extra, filepath, fingertree, ghc-boot, ghc-boot-th, ghc-experimental, ghc-heap, ghc-internal, ghci, ghc-prim, haskeline, haskell-src-exts, hpc, ieee754, indexed-profunctors, integer-gmp, invariant, language-c99, language-c99-simple, language-c99-util, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, optparse-applicative, parallel, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, process, random, reflection, rts, safe, safe-exceptions, s-cargot, semigroups, simple-affine-space, StateVar, stm, strict, syb, template-haskell, temporary, terminfo, text, text-builder-linear, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio-core, utf8-string, vector, vector-algorithms, vector-stream, void, xhtml, xml, Yampa >=0.15, zigzag"
-      ;;
-    *)
-      # For 9* versions, add linear-base
-      case "$1" in
-        9*)
-          echo -n "linear-base, linear-generics, storable-tuple, text-builder-linear, "
-          ;;
-      esac
-      echo "adjunctions, aeson, array, assoc, async, attoparsec, base, base16, base64, bifunctors, bimap, binary, bitvec, bitwise, BoundedChan, bv-sized, bytebuild, byteslice, bytesmith, bytestring, Cabal, case-insensitive, chronos, clock, colour, comonad, concurrent-extra, config-value, constraints, containers, contiguous, contravariant, copilot >=3.19, copilot-c99, copilot-core >=3.19, copilot-interpreter >=3.19, copilot-language >=3.19, copilot-libraries >=3.19, copilot-prettyprinter >=3.19, copilot-theorem >=3.19, data-array-byte, data-default, data-default-class, data-default-instances-containers, data-default-instances-dlist, data-default-instances-old-locale, data-fix, data-reify, deepseq, deriving-compat, directory, distributive, dlist, dunai, effectful, effectful-core, exceptions, extra, filepath, fingertree, free, generically, generic-deriving, ghc-boot, ghc-boot-th, ghc-heap, ghci, ghc-prim, hashable, hashtables, haskeline, haskell-src-exts, haskell-src-meta, HList, hpc, ieee754, indexed-profunctors, indexed-traversable, indexed-traversable-instances, integer-gmp, integer-logarithms, invariant, io-streams, kan-extensions, language-c99, language-c99-simple, language-c99-util, lens, libBF, libiserv, megaparsec, monad-control, MonadRandom, mtl, natural-arithmetic, old-locale, OneTuple, optics, optics-core, optics-extra, optics-th, optparse-applicative, ordered-containers, parallel, parameterized-utils, parsec, parser-combinators, pretty, pretty-simple, prettyprinter, primitive, primitive-addr, primitive-offset, primitive-unlifted, process, profunctors, QuickCheck, random, reflection, rts, run-st, safe, safe-exceptions, s-cargot, scientific, semialign, semigroupoids, semigroups, simple-affine-space, splitmix, StateVar, stm, storable-tuple, strict, syb, tagged, template-haskell, temporary, terminfo, text, text-short, th-abstraction, these, th-expand-syns, th-lift, th-lift-instances, th-orphans, th-reify-many, time, time-compat, torsor, transformers, transformers-base, transformers-compat, tuples, unbounded-delays, unix, unliftio, unliftio-core, unordered-containers, utf8-string, uuid-types, vector, vector-algorithms, vector-stream, versions, void, what4 >= 1.5, wide-word, witherable, xhtml, xml, Yampa >=0.15, zigzag, zlib"
-      ;;
-  esac
+  echo "base, containers, mtl, transformers, text, bytestring, deepseq, extra, directory, filepath"
 }
 
 cat >"$projdir/sandbox.cabal" <<EOF
@@ -118,6 +84,9 @@ EOF
 
 cat >"$projdir/cabal.project" <<EOF
 packages: .
+          /automaton-visualiser/
+
+allow-newer: latex-svg-image:*
 EOF
 
 printf "\x1B[1m[mkbuildscript] Building cabal project\x1B[0m\n"
@@ -176,6 +145,7 @@ args=(
   --ro-bind "${HOME}/.cabal/bin" "${HOME}/.cabal/bin"
   --ro-bind "${HOME}/.cabal/store" "${HOME}/.cabal/store"
   --bind "${HOME}/.cabal/packages" "${HOME}/.cabal/packages"  # should be safe to modify this? Just stores downloads
+  --ro-bind "${PWD}/../automaton-visualiser" /automaton-visualiser
   --dev-bind /dev/null /dev/null
   --bind "${workdir}" /builderprojs
   --bind "${projdir}" /project
@@ -201,12 +171,45 @@ ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
   cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs --minimize-conflict-set freeze
 [[ $test_mode -eq 1 ]] && exit
 ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
-  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1
+  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1 lib:automata-visualiser exe:thing
 EOF
+
+printf "\x1B[1m[mkbuildscript] Writing automata-visualiser package conf\x1B[0m\n"
+
+av_depends=$(jq -r '[.["install-plan"] | .[] | select(.["pkg-name"] == "automata-visualiser") | select(.["component-name"] == "lib") | .depends | .[]] | unique | join("\n    ")' "$projdir/dist-newstyle/cache/plan.json")
+
+av_modules=$(find "$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build" \
+  -name "*.hi" ! -name "Paths_*" | \
+  sed "s|.*/build/||;s|\.hi$||;s|/|.|g" | \
+  sort | tr '\n' ' ')
+
+cat >"$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace/automata-visualiser-0.1.0-inplace.conf" <<EOF
+name:                 automata-visualiser
+version:              0.1.0
+visibility:           public
+id:                   automata-visualiser-0.1.0-inplace
+key:                  automata-visualiser-0.1.0-inplace
+license:              MIT
+exposed:              True
+exposed-modules:
+    ${av_modules}
+import-dirs:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+library-dirs:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+library-dirs-static:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+hs-libraries:         HSautomata-visualiser-0.1.0-inplace
+depends:
+    ${av_depends}
+EOF
+
+ghcup --no-verbose --offline run --ghc "$ghcversion" -- \
+  ghc-pkg --package-db="$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace" recache
 
 printf "\x1B[1m[mkbuildscript] Collecting dependencies from cabal plan.json\x1B[0m\n"
 
-depends=( $( jq -r '.["install-plan"] | .[] | select(.["style"] == "local") | .depends | "-package-id " + .[]' "$projdir"/dist-newstyle/cache/plan.json ) )
+depends=( $( jq -r '[.["install-plan"] | .[] | select(.["style"] == "local") | .depends | .[] | select(endswith("-inplace") | not) | "-package-id " + .] | unique | .[]' "$projdir"/dist-newstyle/cache/plan.json ) )
 
 printf "\x1B[1m[mkbuildscript] Writing %s\x1B[0m\n" "$outscript"
 
@@ -218,11 +221,12 @@ ghcup --no-verbose --offline run --ghc '$ghcversion' -- ghc \\
   -Wmissing-home-modules \\
   -no-user-package-db \\
   -package-db /builderprojs/ghc-'$ghcversion'-cabal/store/ghc-'$ghcversion'*/package.db \\
+  -package-db /builderprojs/ghc-'$ghcversion'-proj/dist-newstyle/build/x86_64-linux/ghc-'$ghcversion'/automata-visualiser-0.1.0/package.conf.inplace \\
   ${depends[@]} \\
+  -package-id automata-visualiser-0.1.0-inplace \\
   -rtsopts \\
   "\$@"
 EOF
-
 chmod +x "$outscript"
 
 # vim: set sw=2 ts=8 et:
