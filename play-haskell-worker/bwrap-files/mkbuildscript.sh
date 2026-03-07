@@ -171,8 +171,43 @@ ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
   cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs --minimize-conflict-set freeze
 [[ $test_mode -eq 1 ]] && exit
 ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
-  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1
+  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1 lib:automata-visualiser exe:thing
 EOF
+
+
+printf "\x1B[1m[mkbuildscript] Writing automata-visualiser package conf\x1B[0m\n"
+
+av_depends=$(jq -r '[.["install-plan"] | .[] | select(.["pkg-name"] == "automata-visualiser") | select(.["component-name"] == "lib") | .depends | .[]] | unique | join("\n    ")' "$projdir/dist-newstyle/cache/plan.json")
+
+av_modules=$(find "$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build" \
+  -name "*.hi" ! -name "Paths_*" | \
+  sed "s|.*/build/||;s|\.hi$||;s|/|.|g" | \
+  sort | tr '\n' ' ')
+
+cat >"$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace/automata-visualiser-0.1.0-inplace.conf" <<EOF
+name:                 automata-visualiser
+version:              0.1.0
+visibility:           public
+id:                   automata-visualiser-0.1.0-inplace
+key:                  automata-visualiser-0.1.0-inplace
+license:              MIT
+exposed:              True
+exposed-modules:
+    ${av_modules}
+import-dirs:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+library-dirs:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+library-dirs-static:
+    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
+hs-libraries:         HSautomata-visualiser-0.1.0-inplace
+depends:
+    ${av_depends}
+EOF
+
+ghcup --no-verbose --offline run --ghc "$ghcversion" -- \
+  ghc-pkg --package-db="$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace" recache
+
 
 printf "\x1B[1m[mkbuildscript] Collecting dependencies from cabal plan.json\x1B[0m\n"
 
