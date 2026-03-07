@@ -239,12 +239,25 @@ function doRun(run: Runner) {
 			setInvisible(ecNote, true);
 		}
 
+		let debugText: string, svgText: string, tikzText: string;
+		debugText = svgText = tikzText = "";
+		const components = (response.sout as string).split("===");
+		if (components.length !== 3) {
+			debugText = response.sout as string;
+		} else {
+			[debugText, svgText, tikzText] = components;
+		}
+
 		setInvisible(document.getElementById("out-container-ghcout"), (response.ghcout as string).length == 0);
-		setInvisible(document.getElementById("out-container-stdout"), (response.sout as string).length == 0);
+		setInvisible(document.getElementById("out-container-stdout"), debugText.length == 0);
+		setInvisible(document.getElementById("out-container-svg"),    svgText.length == 0);
+		setInvisible(document.getElementById("out-container-tikz"),   tikzText.length == 0);
 		setInvisible(document.getElementById("out-container-stderr"), (response.serr as string).length == 0);
 
 		if (response.ghcout) renderGHCout(document.getElementById("out-ghcout"), response.ghcout as string);
-		if (response.sout) document.getElementById("out-stdout").textContent = response.sout as string;
+		if (response.sout) document.getElementById("out-stdout").textContent = debugText;
+		if (response.sout) document.getElementById("svg-content").innerHTML = svgText;
+		if (response.sout) document.getElementById("tikz-content").textContent = tikzText;
 		if (response.serr) document.getElementById("out-stderr").textContent = response.serr as string;
 	});
 
@@ -545,5 +558,42 @@ handleSeparatorDragEvents();
 addMediaListener("screen and (max-width: 800px)", "resize", function(ql) {
 	if (ql && ql.matches) setSeparatorToWidth(null);
 });
+
+
+function copyToClipboard(button: Node, content: string) {
+	const oldButton: string = button.textContent as string;
+
+	if (location.protocol === "https:") {
+		navigator.clipboard.writeText(content).then(() => {
+			button.textContent = "Copied";
+			setTimeout(() => { button.textContent = oldButton; }, 1000);
+		}, (e) => {
+			alert("There was a problem copying to the clipboard.")
+			console.error('Could not copy text: ', e);
+		})
+	} else {
+		alert("You must be on https to be able to copy.")
+	}
+}
+
+function downloadText(fname: string, content: string) {
+	const a = document.createElement("a");
+	const url = URL.createObjectURL(new Blob([content], { type: "text/plain" }));
+
+	a.href = url;
+	a.download = fname;
+	document.body.appendChild(a);
+	a.click();
+
+	setTimeout(function() {
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(url);
+	}, 0);
+}
+
+document.getElementById("download-svg")?.addEventListener("click", () => downloadText("autamaton.svg", document.getElementById("svg-content")?.innerHTML ?? ""));
+document.getElementById("download-tikz")?.addEventListener("click", () => downloadText("automaton.tex", document.getElementById("tikz-content")?.textContent ?? ""));
+document.getElementById("copy-svg")?.addEventListener("click", e => copyToClipboard(e.currentTarget as HTMLElement, document.getElementById("svg-content")?.innerHTML ?? ""));
+document.getElementById("copy-tikz")?.addEventListener("click", e => copyToClipboard(e.currentTarget as HTMLElement, document.getElementById("tikz-content")?.textContent ?? ""));
 
 // vim: set noet sw=4 ts=4:

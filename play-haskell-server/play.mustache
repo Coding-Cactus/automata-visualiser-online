@@ -401,6 +401,26 @@ kbd {
 	font-size: smaller;
 	font-family: monospace;
 }
+
+#svg-output {
+  background-color: white;
+  padding: 10px;
+  position: relative;
+}
+#tikz-output {
+  background-color: #333;
+  padding: 10px;
+  position: relative;
+}
+
+.output-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
 <script>
@@ -502,8 +522,28 @@ preload_ghcopt = {{&preload_ghcopt}};
 				<pre id="out-stderr"></pre>
 			</div>
 			<div id="out-container-stdout" class="invisible">
-				<div class="output-header">Output</div>
+				<div class="output-header">Debug Output</div>
 				<pre id="out-stdout"></pre>
+      </div>
+      <div id="out-container-svg" class="invisible">
+				<div class="output-header">SVG Output</div>
+        <div id="svg-output">
+          <div id="svg-content"></div>
+          <div class="output-buttons">
+            <button id="download-svg" class="pure-button">Download</button>
+            <button id="copy-svg" class="pure-button">Copy</button>
+          </div>
+        </div>
+      </div>
+      <div id="out-container-tikz" class="invisible">
+				<div class="output-header">TikZ Output</div>
+        <div id="tikz-output">
+          <pre id="tikz-content"></pre>
+          <div class="output-buttons">
+            <button id="download-tikz" class="pure-button">Download</button>
+            <button id="copy-tikz" class="pure-button">Copy</button>
+          </div>
+        </div>
 			</div>
 		</div>
 	</div>

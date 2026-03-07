@@ -1,0 +1,15 @@
+-- code to apopend to all playground scripts
+main :: IO ()
+main = do
+  let svgFile = "out.svg"
+  let tikzFile = "out.tex"
+
+  render tikzFile tikz automaton
+  render svgFile svg automaton
+
+  let sep = "==="
+  putStrLn sep
+  putStrLn =<< readFile svgFile
+  putStrLn sep
+  putStrLn =<< readFile tikzFile
+

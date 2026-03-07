@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
@@ -11,6 +12,9 @@ import qualified Data.ByteString.Char8 as Char8
 import Data.ByteString (ByteString)
 import Data.Char (ord, isSpace)
 import qualified Data.Map.Strict as Map
+import Data.FileEmbed
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TLE
 import qualified Data.Text.Encoding.Error as TEE
@@ -69,7 +73,7 @@ handleRequest ctx = \case
                 (runreqCommand runreq)
                 (runreqVersion runreq)
                 (runreqOpt runreq)
-                (runreqSource runreq)
+                (runreqSource runreq <> runnerTemplate)
     let response = case result of
           Left err -> RunResponseErr err
           Right res -> RunResponseOk
@@ -78,13 +82,16 @@ handleRequest ctx = \case
                          , runresStdout = TL.toStrict $ TLE.decodeUtf8With TEE.lenientDecode $ resStdout res
                          , runresStderr = TL.toStrict $ TLE.decodeUtf8With TEE.lenientDecode $ resStderr res
                          , runresTimeTakenSecs = resTimeTaken res }
-    
+
     lift $ writeJSON (signMessage (ctxSecretKey ctx) response)
 
   Health -> do
     response <- HealthResponse <$> liftIO availableVersions
                                <*> pure (poolParallelism (ctxPool ctx))
     writeJSON (signMessage (ctxSecretKey ctx) response)
+
+runnerTemplate :: T.Text
+runnerTemplate = TE.decodeUtf8With TEE.lenientDecode $(embedFileRelative "runner-template.hs")
 
 splitPath :: ByteString -> Maybe [ByteString]
 splitPath path

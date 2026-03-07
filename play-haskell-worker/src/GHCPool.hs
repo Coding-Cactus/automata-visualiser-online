@@ -6,6 +6,7 @@
 -- I'm using unsafePerformIO to create a global mutex. I believe this is
 -- necessary to let that go alright.
 {-# OPTIONS -fno-full-laziness -fno-cse #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-} -- TODO: remove this
 
 module GHCPool (
   availableVersions,
@@ -28,7 +29,7 @@ import Foreign.C.Error (eFAULT, Errno (Errno))
 import Foreign.Marshal.Alloc (allocaBytes)
 import GHC.IO.Exception (IOException(ioe_errno))
 import qualified System.Clock as Clock
-import System.Directory (listDirectory)
+import System.Directory (listDirectory, getDirectoryContents, getCurrentDirectory)
 import System.Exit (ExitCode(..))
 import System.FilePath ((</>))
 import System.IO (hPutStr, hClose, Handle, hGetBufSome, hPutStrLn, stderr)
