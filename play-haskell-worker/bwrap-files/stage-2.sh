@@ -26,6 +26,10 @@ args=(
   --ro-bind "${chroot}/usr/lib" /usr/lib
   --ro-bind "${chroot}/usr/libexec" /usr/libexec
   --ro-bind "${chroot}/usr/include" /usr/include
+  --ro-bind "${chroot}/usr/share/texlive" /usr/share/texlive
+  --ro-bind "${chroot}/usr/share/texmf/" /usr/share/texmf
+  --ro-bind "${chroot}/etc/texmf/" /etc/texmf
+  --ro-bind "${chroot}/var/lib/texmf" /var/lib/texmf
   # --ro-bind "${chroot}/lib" /lib
   --symlink /usr/lib /lib
   --ro-bind "${chroot}/lib64" /lib64

@@ -13,6 +13,10 @@ sed -i '/^_apt:/d' /etc/passwd
 
 apt install -y build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libtinfo6 locales zlib1g-dev gawk
 
+# latex requirements
+apt install -y texlive-base texlive-latex-base texlive-latex-extra dvisvgm
+
+
 # GHC LLVM 5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 # 8.4.4    x                                             
 # 8.6.5       x                                          
