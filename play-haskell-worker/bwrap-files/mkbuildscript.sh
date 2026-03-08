@@ -142,7 +142,6 @@ args=(
   --ro-bind "${HOME}/.cabal/bin" "${HOME}/.cabal/bin"
   --ro-bind "${HOME}/.cabal/store" "${HOME}/.cabal/store"
   --bind "${HOME}/.cabal/packages" "${HOME}/.cabal/packages"  # should be safe to modify this? Just stores downloads
-  --ro-bind "${PWD}/../automaton-visualiser" /automaton-visualiser
   --dev /dev
   --bind "${workdir}" /builderprojs
   --bind "${projdir}" /project
