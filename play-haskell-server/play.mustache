@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/haskell-play-logo.png">
-<title>Haskell Playground</title>
+<title>Automata Playground</title>
 <style>
 html, body {
 	margin: 0;
@@ -191,34 +191,6 @@ html, body {
 	}
 }
 
-#output-overlay {
-	grid-column: right-start / right-end;
-	grid-row: right-top / right-bottom;
-	background-color: rgba(238, 238, 238, 0.5);
-}
-@media (prefers-color-scheme: dark) {
-	#output-overlay {
-		background-color: rgba(51, 51, 51, 0.5);
-	}
-}
-
-#editor-overlay {
-	grid-column: left-start / left-end;
-	grid-row: left-top / left-bottom;
-	z-index: 1;
-	text-align: right;
-	padding: 5px;
-	pointer-events: none;
-}
-#editor-overlay button {
-	opacity: 0.8;
-	pointer-events: auto;
-}
-@media (prefers-color-scheme: dark) {
-	#editor-overlay button {
-		background-color: #aaa;
-	}
-}
 #btn-basic-template.fadeout {
 	opacity: 0;
 	transition: opacity 1.5s;
@@ -407,6 +379,7 @@ kbd {
   padding: 10px;
   position: relative;
 }
+#svg-content > svg { overflow: visible; }
 #tikz-output {
   background-color: #333;
   padding: 10px;
@@ -450,19 +423,12 @@ preload_ghcopt = {{&preload_ghcopt}};
 	<dialog id="help-alert">
 		<p>Toolbar controls:</p>
 		<ul>
-			<li><b>Run</b>: Compile and execute your program. It must have a <code>main</code> function for this to work.</li>
-			<li><b>Core</b>: Show GHC's intermediate representation for your module. To avoid having to define <code>main</code>, put e.g. <code>module M where</code> before the first <code>import</code>.</li>
-			<li><b>Asm</b>: Show compiled x86_64 assembly.</li>
-		</ul>
-
-		<p>Drop-down menus:</p>
-		<ul>
-			<li>GHC version selection.</li>
-			<li>Optimisation flags: a higher number means more optimisations. <code>-O2</code> is rarely helpful.</li>
+			<li><b>Run</b>: Compile and execute your program.
 		</ul>
 
 		<p>Tips and tricks:</p>
 		<ul>
+      <li>See <a href="https://github.com/Coding-Cactus/automata-visualiser-online" target="_blank">GitHub</a> for syntax documentation</li>
 			<li><kbd class="ui-ctrl-cmd">Ctrl</kbd>+<kbd>Enter</kbd> re-runs your code using the most recent configuration.</li>
 			<li>
 				For keyboard shortcuts in the editor (<a href="https://ace.c9.io/" target="_blank">Ace</a>), see <a href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank">this list</a>.
@@ -488,10 +454,6 @@ preload_ghcopt = {{&preload_ghcopt}};
 		<img id="title" src="/haskell-logo-tw.svg">
 		<div id="toolbar">
 			<button id="btn-run" class="pure-button">Run</button>
-			<button id="btn-core" class="pure-button">Core</button>
-			<button id="btn-asm" class="pure-button">Asm</button>
-			<select id="ghcversionselect"></select>
-			<select id="optselect"></select>
 			<button id="btn-save" class="pure-button">Save &amp; share code</button>
 			{{#pastedate}}
 			<span id="paste-metadata">
@@ -505,7 +467,7 @@ preload_ghcopt = {{&preload_ghcopt}};
 			{{/pastekey}}
 			<span id="toolbar-mid-spacer"></span>
 			<span class="toolbar-link"><a href="javascript:doShowHelpDialog()">Help</a></span>
-			<span class="toolbar-link">Open source: <a href="https://github.com/haskell/play-haskell" target="_blank">GitHub</a></span>
+			<span class="toolbar-link">Open source: <a href="https://github.com/Coding-Cactus/automata-visualiser-online" target="_blank">GitHub</a></span>
 		</div>
 	</div id="header">
 	<div id="leftcol"></div>
@@ -549,9 +511,6 @@ preload_ghcopt = {{&preload_ghcopt}};
 	</div>
 	<div id="output-overlay"></div>
 	<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-	<div id="editor-overlay">
-		<button id="btn-basic-template" class="pure-button">Basic template</button>
-	</div>
 </div>
 <script src="/ace-files/ace.js"></script>
 <script src="/play-index.js"></script>

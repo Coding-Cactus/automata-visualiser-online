@@ -13,14 +13,6 @@ function addMediaListener(querystr: string, fallbackevent: string | null, cb: (q
 	}
 }
 
-// If a version is not present in this dictionary, just display it as-is
-const ghcReadableVersion: Record<string, string> = {
-	"9.6.0.20230111": "9.6.1-alpha1",
-	"9.6.0.20230128": "9.6.1-alpha2",
-	"9.6.0.20230210": "9.6.1-alpha3",
-	"9.6.0.20230302": "9.6.1-rc1",
-};
-
 // defined in a <script> block in play.mustache
 declare var preload_script: string;
 declare var preload_ghcver: string;
@@ -43,7 +35,7 @@ editor.session.setOptions({
 })
 
 addMediaListener("(prefers-color-scheme: dark)", null, function(ql) {
-	if (ql.matches) editor.setTheme("ace/theme/monokai");
+	if (ql.matches) editor.setTheme("ace/theme/tomorrow_night_eighties");
 	else editor.setTheme("ace/theme/github_light_default");
 });
 
@@ -55,11 +47,8 @@ type json =
 	| json[]
 	| {[key: string]: json};
 
-type Runner = "run" | "core" | "asm";
-
-let lastRunKind: Runner = "run";
-
 const defaultGHCversion: string = "9.6.7";
+const defaultOpt = "O1"
 
 
 class UnloadHandler {
@@ -145,14 +134,8 @@ function setWorking(yes: boolean) {
 	}
 }
 
-function getVersions(cb: (response: string[]) => void) {
-	performXHR("GET", "/versions", "json", cb, function(xhr) {
-		alert("Error getting available compiler versions (status " + xhr.status + "): " + xhr.responseText);
-	});
-}
-
-function sendRun(source: string, version: string, opt: string, run: Runner, cb: (response: json) => void) {
-	const payload: string = JSON.stringify({code: source, version, opt, output: run});
+function sendRun(source: string, version: string, opt: string, cb: (response: json) => void) {
+	const payload: string = JSON.stringify({code: source, version, opt, output: "run"});
 	setWorking(true);
 	performXHR("POST", "/submit", "json",
 		function(res: json) {
@@ -191,26 +174,12 @@ function renderGHCout(elem: Node, out: string) {
 	}
 }
 
-function selectedGHCversion(): string {
-	let version = (document.getElementById("ghcversionselect") as any).value;
-	if (typeof version != "string" || version == "") version = defaultGHCversion;
-	return version;
-}
-
-function selectedOpt(): string {
-	let opt = (document.getElementById("optselect") as any).value;
-	if (typeof opt != "string" || opt == "") opt = "O1";
-	return opt;
-}
-
-function doRun(run: Runner) {
-	lastRunKind = run;
-
+function doRun() {
 	const source: string = editor.getValue();
-	const version = selectedGHCversion();
-	const opt = selectedOpt();
+	const version = defaultGHCversion;
+	const opt = "O1";
 
-	sendRun(source, version, opt, run, function(response: {[key: string]: json}) {
+	sendRun(source, version, opt, function(response: {[key: string]: json}) {
 		function setInvisible(elem, yes) {
 			if (yes) elem.classList.add("invisible");
 			else elem.classList.remove("invisible");
@@ -297,7 +266,7 @@ function showSaveDialog(saveUrl) {
 
 function doSave() {
 	const source: string = editor.getValue();
-	const payload: string = JSON.stringify({code: source, version: selectedGHCversion(), opt: selectedOpt()});
+	const payload: string = JSON.stringify({code: source, version: defaultGHCversion, opt: defaultOpt});
 
 	performXHR(
 		"POST", "/save", "text",
@@ -394,26 +363,6 @@ function handleSeparatorDragEvents() {
 	});
 }
 
-// Assumes that the element has 'transition: opacity <fadetime>ms'. Assumes
-// .fadeout results in 'opacity: 0' and that .hidden results in
-// 'display: hidden'.
-// Returns a function that hides the element immediately, cancelling the active fadeout.
-function setupButtonFadeout(btn, delayms, fadetimems): () => void {
-	function fullhide() {
-		btn.classList.add("hidden");
-		btn.classList.remove("fadeout");
-	}
-
-	let timeout = setTimeout(() => {
-		btn.classList.add("fadeout");
-		timeout = setTimeout(() => {fullhide(); timeout = null;}, fadetimems + 50);
-	}, delayms);
-
-	return () => {
-		if (timeout != null) clearTimeout(timeout);
-		fullhide();
-	};
-}
 
 // Upon the next user action (mouse move, key press), run the function once.
 function uponUserAction(fun: () => void) {
@@ -429,44 +378,12 @@ function uponUserAction(fun: () => void) {
 	window.addEventListener("keydown", run); keyh = true;
 }
 
-type SplitVersion = (string | number)[];
-
-function splitGHCversion(ver: string): SplitVersion {
-	return ver.match(/[0-9]+|[^0-9]+/g).map(s => s.charCodeAt(0) >= 48 && s.charCodeAt(0) < 58 ? +s : s);
-}
-
-function ghcVersionLeq(v1: SplitVersion, v2: SplitVersion): boolean {
-	// No, simple '<=' does not do the right thing on the numbers inside.
-	for (let i = 0; i < v1.length && i < v2.length; i++) {
-		if (v1[i] < v2[i]) return true;
-		if (v1[i] > v2[i]) return false;
-	}
-	return v1.length <= v2.length;
-}
-
-function matchPreloadedGHCversion(ver: string, available: string[]): string {
-	if (available.indexOf(ver) != -1) return ver;
-
-	// Take the oldest version that has at least the major.minor of the desired
-	// version.
-	// Note: This assumes that the first three components of a version are
-	// <digits>, ".", <digits> so that taking that prefix makes sense.
-	const spl = splitGHCversion(ver).slice(0, 3);
-	for (let i = 0; i < available.length; i++) {
-		if (ghcVersionLeq(spl, splitGHCversion(available[i]))) return available[i];
-	}
-
-	if (available.indexOf(defaultGHCversion) != -1) return defaultGHCversion;
-	if (available.length > 0) available[available.length - 1];
-	return "";  // no versions, whatever?
-}
-
 window.addEventListener("load", function() {
 	editor.commands.addCommand({
 		name: "Run",
 		bindKey: {win: "Ctrl-Enter", mac: "Command-Enter"},
 		exec: function() {
-			doRun(lastRunKind);
+			doRun();
 		},
 		readOnly: true,
 	});
@@ -476,65 +393,18 @@ window.addEventListener("load", function() {
 				? "Press Cmd-Enter to run again"
 				: "Press Ctrl-Enter to run again";
 	document.getElementById("btn-run").setAttribute("title", runTooltip);
-	document.getElementById("btn-core").setAttribute("title", runTooltip);
-	document.getElementById("btn-asm").setAttribute("title", runTooltip);
 
 	if (editor.commands.platform == "mac") {
 		const l = document.getElementsByClassName("ui-ctrl-cmd");
 		for (let i = 0; i < l.length; i++) l[i].innerHTML = "Cmd";
 	}
 
-	getVersions(function(versions) {
-		const initialGHCver =
-			preload_ghcver == null
-				? defaultGHCversion
-				: matchPreloadedGHCversion(preload_ghcver, versions);
-
-		const sel: HTMLElement = document.getElementById("ghcversionselect");
-		for (let i = versions.length - 1; i >= 0; i--) {
-			const opt: HTMLOptionElement = document.createElement("option");
-			opt.value = versions[i];
-			const readable = versions[i] in ghcReadableVersion ? ghcReadableVersion[versions[i]] : versions[i];
-			opt.textContent = "GHC " + readable;
-			if (versions[i] == initialGHCver) opt.setAttribute("selected", "");
-			sel.appendChild(opt);
-		}
-	});
-
-	const sel: HTMLElement = document.getElementById("optselect");
-	["O0", "O1", "O2"].forEach(o => {
-		const opt: HTMLOptionElement = document.createElement("option");
-		opt.value = o;
-		opt.textContent = "-" + o;
-		if (o == (preload_ghcopt ?? "O1")) opt.setAttribute("selected", "");
-		sel.appendChild(opt);
-	});
-
 	gUnloadHandler = new UnloadHandler();
-
-	const btnBasicTemplate = document.getElementById("btn-basic-template");
-	let completeFadeout = null;
-	uponUserAction(() => {
-		completeFadeout = setupButtonFadeout(btnBasicTemplate, 2000, 1500);
-	});
-	document.getElementById("btn-basic-template").addEventListener('click', () => {
-		// Ensure that this change does not get picked up as a user change to be saved
-		gUnloadHandler.ignoreChanges = true;
-		editor.session.doc.setValue("main :: IO ()\nmain = _");
-		gUnloadHandler.ignoreChanges = false;
-
-		if (completeFadeout != null) completeFadeout();
-		else btnBasicTemplate.classList.add("hidden");
-		editor.focus();
-		editor.gotoLine(2, 8);
-	});
 
 	editor.focus();
 });
 
-document.getElementById("btn-run").addEventListener('click', () => { doRun("run") });
-document.getElementById("btn-core").addEventListener('click', () => { doRun("core") });
-document.getElementById("btn-asm").addEventListener('click', () => { doRun("asm") });
+document.getElementById("btn-run").addEventListener('click', () => { doRun() });
 document.getElementById("btn-save").addEventListener('click', () => { doSave() });
 document.getElementById("btn-close-save-alert").addEventListener('click', () => {
 	(document.getElementById("save-alert") as HTMLDialogElement).close();
