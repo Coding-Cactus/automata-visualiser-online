@@ -9,12 +9,29 @@ automaton = do
   initial a
   final c
 
-  a >--["\\epsilon" ~~ ("\\epsilon", "\\$")]--> b
+  a >--["\\varepsilon" ~~ ("\\varepsilon", "\\bot")]--> b
 
-  b >--["(" ~~ ("\\epsilon", "(")]--> b
-  b >--[")" ~~ ("(", "\\epsilon")]--> b
+  b >--["(" ~~ ("\\varepsilon", "(")]--> b
+  b >--[")" ~~ ("(", "\\varepsilon")]--> b
 
-  b >--["\\epsilon" ~~ ("\\$", "\\epsilon")]--> c
+  b >--["\\varepsilon" ~~ ("\\bot", "\\varepsilon")]--> c
 
   a `leftOf` b
 
+-- ~~~~ CUT
+
+import Automata
+
+automaton :: AutomatonBuilder String Int
+automaton = do
+  a <- state "q_{even}"
+  b <- state "q_{odd}"
+
+  initial a
+  final a
+
+  a >--[0]--> a
+  a >--[1]--> b
+
+  b >--[0]--> a
+  b >--[1]--> b
