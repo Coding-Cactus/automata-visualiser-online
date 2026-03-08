@@ -53,14 +53,6 @@ mkdir -p "$projdir"
 mkdir -p "$cabaldir"
 mkdir -p "$outdir"
 
-function build_depends_for() {
-  if [[ -n $dependencies_override ]]; then
-    echo "$dependencies_override"
-    return
-  fi
-
-  echo "base, containers, mtl, transformers, text, bytestring, deepseq, extra, directory, filepath"
-}
 
 cat >"$projdir/sandbox.cabal" <<EOF
 cabal-version: 2.0
@@ -72,7 +64,7 @@ executable thing
   hs-source-dirs: .
   default-language: Haskell2010
   ghc-options: -Wall -rtsopts
-  build-depends: $(build_depends_for "$ghcversion")
+  build-depends: base, containers, mtl, transformers, text, bytestring, deepseq, extra, directory, filepath, automata-visualiser
 EOF
 # shorter dep list that only builds splitmix and random:
 # build-depends: array, base, binary, bytestring, Cabal, containers, deepseq, directory, exceptions, filepath, ghc-boot, ghc-boot-th, ghc-heap, ghci, ghc-prim, haskeline, hpc, integer-gmp, libiserv, mtl, parsec, pretty, process, random, rts, stm, template-haskell, terminfo, text, time, transformers, unix, xhtml
@@ -84,7 +76,11 @@ EOF
 
 cat >"$projdir/cabal.project" <<EOF
 packages: .
-          /automaton-visualiser/
+
+source-repository-package
+    type: git
+    location: https://github.com/Coding-Cactus/automaton-visualiser
+    tag: c721c45801e102a6268f3fd82fa26c98edd6e91c
 
 allow-newer: latex-svg-image:*
 EOF
@@ -138,6 +134,7 @@ args=(
   "${symlink_bindargs[@]}"
   --ro-bind "${chroot}/etc/alternatives" /etc/alternatives
   --ro-bind /etc/resolv.conf /etc/resolv.conf
+  --ro-bind "${chroot}/etc/ssl" /etc/ssl
   --dir "${ghcup_base}"
   --ro-bind "${ghcup_base}/bin"   "${ghcup_base}/bin"
   --ro-bind "${ghcup_base}/ghc"   "${ghcup_base}/ghc"
@@ -146,7 +143,7 @@ args=(
   --ro-bind "${HOME}/.cabal/store" "${HOME}/.cabal/store"
   --bind "${HOME}/.cabal/packages" "${HOME}/.cabal/packages"  # should be safe to modify this? Just stores downloads
   --ro-bind "${PWD}/../automaton-visualiser" /automaton-visualiser
-  --dev-bind /dev/null /dev/null
+  --dev /dev
   --bind "${workdir}" /builderprojs
   --bind "${projdir}" /project
   # The order of /usr/bin before /bin is important for gcc to properly find cc1
@@ -171,42 +168,8 @@ ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
   cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs --minimize-conflict-set freeze
 [[ $test_mode -eq 1 ]] && exit
 ghcup --no-verbose --offline run --ghc '$ghcversion' -- \\
-  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1 lib:automata-visualiser exe:thing
+  cabal --store-dir=/builderprojs/ghc-'$ghcversion'-cabal/store --logs-dir=/builderprojs/ghc-'$ghcversion'-cabal/logs build -j1
 EOF
-
-
-printf "\x1B[1m[mkbuildscript] Writing automata-visualiser package conf\x1B[0m\n"
-
-av_depends=$(jq -r '[.["install-plan"] | .[] | select(.["pkg-name"] == "automata-visualiser") | select(.["component-name"] == "lib") | .depends | .[]] | unique | join("\n    ")' "$projdir/dist-newstyle/cache/plan.json")
-
-av_modules=$(find "$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build" \
-  -name "*.hi" ! -name "Paths_*" | \
-  sed "s|.*/build/||;s|\.hi$||;s|/|.|g" | \
-  sort | tr '\n' ' ')
-
-cat >"$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace/automata-visualiser-0.1.0-inplace.conf" <<EOF
-name:                 automata-visualiser
-version:              0.1.0
-visibility:           public
-id:                   automata-visualiser-0.1.0-inplace
-key:                  automata-visualiser-0.1.0-inplace
-license:              MIT
-exposed:              True
-exposed-modules:
-    ${av_modules}
-import-dirs:
-    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
-library-dirs:
-    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
-library-dirs-static:
-    /builderprojs/ghc-$ghcversion-proj/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/build
-hs-libraries:         HSautomata-visualiser-0.1.0-inplace
-depends:
-    ${av_depends}
-EOF
-
-ghcup --no-verbose --offline run --ghc "$ghcversion" -- \
-  ghc-pkg --package-db="$projdir/dist-newstyle/build/x86_64-linux/ghc-$ghcversion/automata-visualiser-0.1.0/package.conf.inplace" recache
 
 
 printf "\x1B[1m[mkbuildscript] Collecting dependencies from cabal plan.json\x1B[0m\n"
@@ -223,7 +186,6 @@ ghcup --no-verbose --offline run --ghc '$ghcversion' -- ghc \\
   -Wmissing-home-modules \\
   -no-user-package-db \\
   -package-db /builderprojs/ghc-'$ghcversion'-cabal/store/ghc-'$ghcversion'*/package.db \\
-  -package-db /builderprojs/ghc-'$ghcversion'-proj/dist-newstyle/build/x86_64-linux/ghc-'$ghcversion'/automata-visualiser-0.1.0/package.conf.inplace \\
   ${depends[@]} \\
   -rtsopts \\
   "\$@"

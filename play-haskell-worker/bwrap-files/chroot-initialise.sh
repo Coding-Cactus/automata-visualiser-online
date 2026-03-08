@@ -11,7 +11,7 @@ apt upgrade -y -o Dpkg::Options::="--path-exclude=/usr/sbin/pam_extrausers_chkpw
 
 sed -i '/^_apt:/d' /etc/passwd
 
-apt install -y build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libtinfo6 locales zlib1g-dev gawk
+apt install -y build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libtinfo6 locales zlib1g-dev gawk git
 
 # latex requirements
 apt install -y texlive-base texlive-latex-base texlive-latex-extra dvisvgm
