@@ -2,3 +2,8 @@ dist-newstyle/
 node_modules/
 .stack-work/
 .ccls-cache/
+play-haskell-server/adminpass.txt
+play-haskell-server/secretkey.txt
+play-haskell-worker/secretkey.txt
+play-haskell-worker/trustedkeys.txt
+
