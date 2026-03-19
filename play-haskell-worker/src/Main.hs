@@ -91,7 +91,7 @@ handleRequest ctx = \case
     writeJSON (signMessage (ctxSecretKey ctx) response)
 
 runnerTemplate :: T.Text
-runnerTemplate = TE.decodeUtf8With TEE.lenientDecode $(embedFileRelative "runner-template.hs")
+runnerTemplate = TE.decodeUtf8With TEE.lenientDecode $(embedFileRelative "runner-template.txt")
 
 splitPath :: ByteString -> Maybe [ByteString]
 splitPath path

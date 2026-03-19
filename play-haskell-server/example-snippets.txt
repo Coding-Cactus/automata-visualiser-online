@@ -1,5 +1,10 @@
 import Automata
 
+config :: AutomatonConfig
+config = setConfig {
+  acceptanceStyle = Arrow
+}
+
 automaton :: AutomatonBuilder String (StackTransition String String)
 automaton = do
   a <- state "a"
@@ -21,6 +26,11 @@ automaton = do
 -- ~~~~ CUT
 
 import Automata
+
+config :: AutomatonConfig
+config = setConfig {
+  acceptanceStyle = DoubleCircle
+}
 
 automaton :: AutomatonBuilder String Int
 automaton = do
