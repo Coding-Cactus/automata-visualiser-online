@@ -80,7 +80,7 @@ packages: .
 source-repository-package
     type: git
     location: https://github.com/Coding-Cactus/automata-visualiser
-    tag: f71edac7f091ad5f4ae2b0ba126181128d412e00
+    tag: 8be231b2cbd8d0b28878712d7f08d8f1ca952b03
 
 allow-newer: latex-svg-image:*
 EOF
