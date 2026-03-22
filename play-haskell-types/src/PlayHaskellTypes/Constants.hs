@@ -3,4 +3,4 @@ module PlayHaskellTypes.Constants where
 
 
 runTimeoutMicrosecs :: Int
-runTimeoutMicrosecs = 5_000_000
+runTimeoutMicrosecs = 15_000_000
