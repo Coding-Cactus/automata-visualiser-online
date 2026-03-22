@@ -91,3 +91,31 @@ automaton = do
   position d c 45 1
 
   e `below` d
+
+-- ~~~~ CUT
+
+Binary Divisibility
+-- ~~~~ BEGIN
+
+import Automata
+import Control.Monad
+
+config :: AutomatonConfig
+config = defaultConfig
+
+automaton :: AutomatonBuilder String Int
+automaton = generalDivisibility 4
+
+generalDivisibility :: Int -> AutomatonBuilder String Int
+generalDivisibility n = do
+  states <- mapM (\i -> state $ "q_{" <> show i <> "}") [0 .. n-1]
+  forM_ [0 .. n-1 ] $ \i -> do
+    let s = states !! i
+    let s0 = states !! ((i*2) `mod` n)
+    let s1 = states !! ((i*2+1) `mod` n)
+
+    s >--[0]--> s0
+    s >--[1]--> s1
+
+  initial (head states)
+  final (head states)
