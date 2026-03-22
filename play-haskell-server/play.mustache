@@ -394,6 +394,10 @@ kbd {
   gap: 5px;
   align-items: center;
 }
+
+#exampleselect {
+  margin-right: 20px;
+}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
 <script>
@@ -466,6 +470,9 @@ preload_ghcopt = {{&preload_ghcopt}};
 			<span id="paste-raw">(<a id="paste-raw-link" href="/saved/{{pastekey}}/raw">raw</a>)</span>
 			{{/pastekey}}
 			<span id="toolbar-mid-spacer"></span>
+      <select id="exampleselect">
+        <option value="Examples">Examples</option>
+      </select>
 			<span class="toolbar-link"><a href="javascript:doShowHelpDialog()">Help</a></span>
 			<span class="toolbar-link">Open source: <a href="https://github.com/Coding-Cactus/automata-visualiser-online" target="_blank">GitHub</a></span>
 		</div>

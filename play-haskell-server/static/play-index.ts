@@ -134,6 +134,12 @@ function setWorking(yes: boolean) {
 	}
 }
 
+function getExamples(cb: (response: [string, string][]) => void) {
+	performXHR("GET", "/examples", "json", cb, function(xhr) {
+		alert("Error getting available example programs (status" + xhr.status + "): " + xhr.responseText);
+	});
+}
+
 function sendRun(source: string, version: string, opt: string, cb: (response: json) => void) {
 	const payload: string = JSON.stringify({code: source, version, opt, output: "run"});
 	setWorking(true);
@@ -398,6 +404,27 @@ window.addEventListener("load", function() {
 		const l = document.getElementsByClassName("ui-ctrl-cmd");
 		for (let i = 0; i < l.length; i++) l[i].innerHTML = "Cmd";
 	}
+
+	getExamples(function(examples) {
+		const programs: Record<string, string> = {};
+		const sel: HTMLSelectElement = document.getElementById("exampleselect") as HTMLSelectElement;
+		for (let i = 0; i < examples.length; i++) {
+			const opt: HTMLOptionElement = document.createElement("option");
+			const example: [string, string] = examples[i];
+ 			opt.textContent = example[0];
+			opt.value = example[0];
+			programs[example[0]] = example[1];
+			sel.appendChild(opt);
+		}
+
+		sel.addEventListener("change", () => {
+			const name = sel.value;
+			if (name == "Examples") return;
+
+			editor.session.setValue(programs[name]);
+			sel.value = "Examples";
+		});
+	});
 
 	gUnloadHandler = new UnloadHandler();
 

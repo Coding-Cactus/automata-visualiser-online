@@ -47,6 +47,8 @@ import PlayHaskellTypes
 import qualified PlayHaskellTypes.Sign as Sign
 import qualified PlayHaskellTypes.Statistics as Stats
 
+import Data.Bifunctor (bimap)
+
 
 data ClientJobReq = ClientJobReq
   { cjrGivenKey :: Text
@@ -144,6 +146,7 @@ data WhatRequest
   | PostedIndex
   | FromSaved ByteString ViewType
   | Save
+  | Examples
   | Versions
   | CurrentChallenge
   | Submit
@@ -167,6 +170,7 @@ parseRequest method comps = case (method, comps) of
   (GET, ["saved", key]) -> Just (FromSaved key VTPlayground)
   (GET, ["saved", key, "raw"]) -> Just (FromSaved key VTRaw)
   (POST, ["save"]) -> Just Save
+  (GET, ["examples"]) -> Just Examples
   (GET, ["versions"]) -> Just Versions
   (GET, ["challenge"]) -> Just CurrentChallenge
   (POST, ["submit"]) -> Just Submit
@@ -259,6 +263,10 @@ handleRequest gctx ctx = \case
         modifyResponse (setContentType (Char8.pack "text/plain"))
         writeBS key
       Left err -> httpError 500 err
+
+  Examples -> do
+    modifyResponse (setContentType (Char8.pack "text/plain"))
+    writeJSON $ fmap (bimap Enc.decodeUtf8 Enc.decodeUtf8) exampleSnippets
 
   Versions -> do
     modifyResponse (setContentType (Char8.pack "text/plain"))

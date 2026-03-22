@@ -39,6 +39,8 @@ import qualified Data.Text.Encoding as TE
 import Data.Word (Word64)
 import Numeric.Natural (Natural)
 import System.Exit
+import Data.Vector (Vector)
+import qualified Data.Vector as V
 
 import PlayHaskellTypes.Sign (PublicKey, SecretKey, Signature)
 import qualified PlayHaskellTypes.Sign as Sign
@@ -52,6 +54,14 @@ data Command = CRun   -- ^ Compile and execute a Haskell file
 
 -- | JSON: string; \"O0", \"O1", \"O2".
 data Optimisation = O0 | O1 | O2
+  deriving (Show, Read)
+
+-- JSON: [[string, string]]
+newtype Examples = Examples (Vector Pair)
+  deriving (Show, Read)
+
+-- JSON: [string, string]
+newtype Pair = Pair (ByteString, ByteString)
   deriving (Show, Read)
 
 -- | The GHC version to use for a job.
@@ -149,6 +159,27 @@ instance J.ToJSON Optimisation where
     O0 -> "O0" ; O1 -> "O1" ; O2 -> "O2"
   toEncoding opt = case opt of
     O0 -> JE.string "O0" ; O1 -> JE.string "O1" ; O2 -> JE.string "O2"
+
+instance J.FromJSON Examples where
+  parseJSON (J.Array es) = Examples <$> V.mapM J.parseJSON es
+  parseJSON val = J.prependFailure "parsing Examples failed, " (J.typeMismatch "Array" val)
+
+instance J.ToJSON Examples where
+  toJSON (Examples exs) = J.toJSON exs
+  toEncoding (Examples exs) = JE.list J.toEncoding (V.toList exs)
+
+instance J.FromJSON Pair where
+  parseJSON (J.Array p)
+    | V.length p == 2 = do
+      f <- J.parseJSON (p V.! 0)
+      s <- J.parseJSON (p V.! 1)
+      pure $ Pair (TE.encodeUtf8 f, TE.encodeUtf8 s)
+    | otherwise = fail $ "expected 2 elements, got " <> show (V.length p)
+  parseJSON val = J.prependFailure "parsing Pair failed, " (J.typeMismatch "Array" val)
+
+instance J.ToJSON Pair where
+  toJSON (Pair (f, s)) = J.toJSON [TE.decodeUtf8 f, TE.decodeUtf8 s]
+  toEncoding (Pair (f, s)) = JE.list JE.text [TE.decodeUtf8 f, TE.decodeUtf8 s]
 
 instance J.FromJSON Version where
   parseJSON (J.String s) = return (Version s)

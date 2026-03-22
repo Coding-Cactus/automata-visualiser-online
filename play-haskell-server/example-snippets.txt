@@ -1,3 +1,32 @@
+DFA
+-- ~~~~ BEGIN
+
+import Automata
+
+config :: AutomatonConfig
+config = setConfig {
+  acceptanceStyle = DoubleCircle
+}
+
+automaton :: AutomatonBuilder String Int
+automaton = do
+  a <- state "q_{even}"
+  b <- state "q_{odd}"
+
+  initial a
+  final a
+
+  a >--[0]--> a
+  a >--[1]--> b
+
+  b >--[0]--> a
+  b >--[1]--> b
+
+-- ~~~~ CUT
+
+PDA
+-- ~~~~ BEGIN
+
 import Automata
 
 config :: AutomatonConfig
@@ -25,23 +54,40 @@ automaton = do
 
 -- ~~~~ CUT
 
+Turing Machine
+-- ~~~~ BEGIN
+
 import Automata
 
 config :: AutomatonConfig
-config = setConfig {
-  acceptanceStyle = DoubleCircle
-}
+config = defaultConfig
 
-automaton :: AutomatonBuilder String Int
+automaton :: AutomatonBuilder String (TuringMachineTransition Int)
 automaton = do
-  a <- state "q_{even}"
-  b <- state "q_{odd}"
+  a <- state "q_a"
+  b <- state "q_b"
+  c <- state "q_c"
+  d <- state "q_d"
+  e <- state "q_e"
 
   initial a
-  final a
 
-  a >--[0]--> a
-  a >--[1]--> b
+  a >--[TmT 0 1 L]--> b
+  a >--[TmT 1 1 R]--> c
 
-  b >--[0]--> a
-  b >--[1]--> b
+  b >--[TmT 1 1 L]--> b
+  b >--[TmT 0 1 L]--> c
+
+  c >--[TmT 0 1 L]--> d
+  c >--[TmT 1 0 R]--> e
+
+  d >--[TmT 1 1 R]--> d
+  d >--[TmT 0 1 R]--> a
+
+  e >--[TmT 1 0 R]--> a
+
+  position a b 45 1
+  position a d (-45) 1
+  position d c 45 1
+
+  e `below` d

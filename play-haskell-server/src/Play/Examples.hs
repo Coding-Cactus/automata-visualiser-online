@@ -17,17 +17,17 @@ import System.Random.Stateful (randomRM, globalStdGen)
 randomExampleSnippet :: IO ByteString
 randomExampleSnippet = do
   index <- randomRM (0, V.length exampleSnippets - 1) globalStdGen
-  return (exampleSnippets V.! index)
+  return (snd $ exampleSnippets V.! index)
 
-exampleSnippets :: Vector ByteString
+exampleSnippets :: Vector (ByteString, ByteString)
 exampleSnippets = parseSnippetsFile $(embedFileRelative "example-snippets.txt")
 
-parseSnippetsFile :: ByteString -> Vector ByteString
+parseSnippetsFile :: ByteString -> Vector (ByteString, ByteString)
 parseSnippetsFile file =
   let lns = -- filter out comments
             filter (\line -> not (line `startsWith` BS8.pack "-- ~~~~ # ")) $
               BS.split 10 file
-  in V.fromList $ map trimFile $ toList $ splitOn (BS8.pack "-- ~~~~ CUT") lns
+  in V.fromList $ map getNameWithTemplate $ toList $ splitOn (BS8.pack "-- ~~~~ CUT") lns
   where
     a `startsWith` b = BS.take (BS.length b) a == b
 
@@ -35,5 +35,10 @@ parseSnippetsFile file =
     splitOn spl (x:xs) = let chunk :| chunks = splitOn spl xs
                          in if x == spl then [] :| (chunk : chunks)
                                         else (x : chunk) :| chunks
+
+    getNameWithTemplate :: [ByteString] -> (ByteString, ByteString)
+    getNameWithTemplate = toPair . splitOn (BS8.pack "-- ~~~~ BEGIN")
+    toPair (name :| [txt]) = (trimFile name, trimFile txt)
+    toPair txt = (BS8.pack "unknown", trimFile $ concat txt)
 
     trimFile = BS8.intercalate (BS.singleton 10) . dropWhileEnd BS.null . dropWhile BS.null
