@@ -1,10 +1,6 @@
-# Haskell Playground
+# Automata Visualiser Playground
 
-There's lots still to do, see
-[the issue list](https://github.com/haskell/play-haskell/issues) (as well as
-[TODO.txt](https://github.com/haskell/play-haskell/blob/master/TODO.txt) for some further ideas).
-If you want to contribute, perhaps connect with me (either via an issue or on
-[IRC](https://wiki.haskell.org/IRC_channel)) before writing lots of code.
+The Automata Visualiser Playground is forked from https://github.com/haskell/play-haskell
 
 ## GHCup target platform
 
@@ -56,8 +52,8 @@ sudo pacman -S base-devel
 ### Building the applications
 
 ```bash
-git clone https://github.com/haskell/play-haskell --recurse-submodules
-cd play-haskell
+git clone https://github.com/Coding-Cactus/automata-visualiser-online --recurse-submodules
+cd automata-visualiser-online
 ```
 
 To build the server (that hosts the website but doesn't run any user code):
