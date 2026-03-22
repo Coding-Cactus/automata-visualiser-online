@@ -58,7 +58,7 @@ debug str = do
   putMVar debugMutex ()
 
 maxOutputSizeBytes :: Int
-maxOutputSizeBytes = 100_000
+maxOutputSizeBytes = 1_000_000
 
 availableVersions :: IO [Version]
 availableVersions = do
