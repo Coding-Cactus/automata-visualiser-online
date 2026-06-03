@@ -43,12 +43,15 @@ automaton = do
   initial a
   final c
 
-  a >--["\\varepsilon" ~~ ("\\varepsilon", "\\bot")]--> b
+  let bot = "\\bot"
+  let epsilon = "\\varepsilon"
 
-  b >--["(" ~~ ("\\varepsilon", "(")]--> b
-  b >--[")" ~~ ("(", "\\varepsilon")]--> b
+  a >--[epsilon ~~ (epsilon, bot)]--> b
 
-  b >--["\\varepsilon" ~~ ("\\bot", "\\varepsilon")]--> c
+  b >--["(" ~~ (epsilon, "(")]--> b
+  b >--[")" ~~ ("(", epsilon)]--> b
+
+  b >--[epsilon ~~ (bot, epsilon)]--> c
 
   a `leftOf` b
 
@@ -79,12 +82,12 @@ automaton = do
   b >--[TmT 0 1 L]--> c
 
   c >--[TmT 0 1 L]--> d
-  c >--[TmT 1 0 R]--> e
+  bendLeft $ c >--[TmT 1 0 R]--> e
 
   d >--[TmT 1 1 R]--> d
   d >--[TmT 0 1 R]--> a
 
-  e >--[TmT 1 0 R]--> a
+  bendLeft $ e >--[TmT 1 0 R]--> a
 
   position a b 45 1
   position a d (-45) 1
